@@ -20,8 +20,10 @@ Build a map-based application, which lets the user see geo-based data on a map a
 
 Fill in (either in English, or in Slovak):
 
-**Application description**: `<fill in>`
+**Application description**: Application for dog owners - Helps to navigate to points of interst (vets, pet stores, dog parks)
 
-**Data source**: `<fill in>`
+**Data source**: Data from 3rd class (03-gis)
 
-**Technologies used**: `<fill in>`
+**Technologies used**:  Frontend - java android (API >= 19)
+						Backend java spring 
+						Database PostgreSQL with PostGIS extension
