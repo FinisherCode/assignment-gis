@@ -1,0 +1,51 @@
+- Application for dog owners - Helps to navigate to points of interst (vets, pet stores, dog parks)
+
+- Scenarios:
+	1. Find points of interest (vets, pet stores dog parks) within range (there was just one dog park on my map so in dog parks scenario I skipped
+	picking range step)
+	after picking place user can choose way of transport: 
+		2. After choosing walk/bycicle application navigates to chosen point
+		3. After choosing car application shows on map where are all park lots nerby chosen place (It was intended to look for
+			park lots that are within 200 meters range, but there were points of interest that has no park lots withing that range
+			so I changed it so it finds all park lots that their distance from target point is smaller than mine distance to 
+			target point)
+		4. After choosing bus application finds closest bus stop to me and closest bus stop to the target point. Then user can choose to navigate
+		to bus stop, what takes him to navigation or he can check bus connections from start bus stop to end bus stop at
+		'https://imhd.sk/ba/cestovne-poriadky' - button takes him to browser application so he can come back to application
+		for checking names of bus stops.
+		
+Android application (frontend - thick client) was created in java (android API >= 19)
+
+Backend was proggramed in java spring (application server), for communication I used RESTFull web services
+	- In spring I used raw queries to access database, because hibernate was not able to map postgis objects
+		GET /status returns ok when server is running (just to test wheater server is online)
+	s1	GET /get_vets?x=48.1587084&y=17.0673788&distance=5000
+	s1	GET /get_pet_stores?x=48.1587084&y=17.0673788&distance=2000
+	s1	GET /get_dog_parks?x=48.1587084&y=17.0673788
+	s3	GET /get_park_lots?x=48.1587084&y=17.0673788&my_x=47.98475&my_y=17.6518
+	s4	GET /get_bus_stops?my_x=48.1587084&my_y=17.0673788&dst_x=47.98475&y&dst_y=17.6518
+	
+	each result is JSONArray of JSONObjects
+		[	
+		  {
+			"xCoordinate": 17.1059272,
+			"yCoordinate": 48.1216939,
+			"name": "Animal",
+			"distance": 5447052.72746611
+		  },
+		  {
+			"xCoordinate": 17.1059272,
+			"yCoordinate": 48.1216939,
+			"name": "Animal",
+			"distance": 5447052.72746611
+		  }
+		]
+				
+Database: PostgreSQL with PostGIS extension, I used data from  3rd class (3-gis) - it had everything I needed.
+		
+NOTES: - application has default design (nothing nice - no time for UX texting), but it should be responsive for many devices 
+		(tested on 1920x1080 (nexus 5, API 23), 2560×1440 (nexus 6 API 25) - it looked same)
+	   - for navigation I used google Maps application 
+	   - for browsing web pages I used browser application
+	   - for google maps view I registred API key on https://console.developers.google.com and registred my application's credentials to this key.
+	  
