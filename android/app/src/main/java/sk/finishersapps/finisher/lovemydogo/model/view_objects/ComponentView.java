@@ -8,13 +8,12 @@ import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import java.lang.reflect.Type;
-
 import sk.finishersapps.finisher.lovemydogo.R;
-import sk.finishersapps.finisher.lovemydogo.model.data_objects.GenericObject;
+import sk.finishersapps.finisher.lovemydogo.model.data_objects.GenericMapObject;
 
 /**
  * Created by Filip on 26.11.2017.
@@ -24,8 +23,11 @@ import sk.finishersapps.finisher.lovemydogo.model.data_objects.GenericObject;
 public class ComponentView extends RelativeLayout {
 
     private Context context;
-    private TextView mHeaderText = null;
+    private TextView mNameText = null;
+    private TextView mDistanceText = null;
     private Button mNavigateButton = null;
+
+    private LinearLayout mTextsLayout = null;
 
     public ComponentView(Context context) {
         super(context);
@@ -49,16 +51,29 @@ public class ComponentView extends RelativeLayout {
     }
 
     public ComponentView load() {
-        mHeaderText = (TextView) findViewById(R.id.cvHeaderText);
+
+        mTextsLayout = (LinearLayout) findViewById(R.id.cvTextLayout);
+
+        mNameText = (TextView) findViewById(R.id.cvNameText);
+
+        mDistanceText = (TextView) findViewById(R.id.cvDistanceText);
+
         mNavigateButton = (Button) findViewById(R.id.cvNavigateButton);
+
+
         return this;
     }
 
     public ComponentView setPositions(DisplayMetrics displayMetrics) {
-        setViewsPosition(mHeaderText, 0f, 0f, 0.7f, 0.1f, displayMetrics);
-        mHeaderText.setTextSize(TypedValue.COMPLEX_UNIT_PX, displayMetrics.heightPixels * 0.03f);
+//        setViewsPosition(mNameText, 0f, 0f, 0.7f, 0.1f, displayMetrics);
+        mTextsLayout.getLayoutParams().width = (int) (displayMetrics.widthPixels * 0.7f);
+
+        mNameText.setTextSize(TypedValue.COMPLEX_UNIT_PX, displayMetrics.widthPixels * 0.05f);
+
+        mDistanceText.setTextSize(TypedValue.COMPLEX_UNIT_PX, displayMetrics.widthPixels * 0.04f);
+
         mNavigateButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, displayMetrics.heightPixels * 0.025f);
-        setViewsPosition(mNavigateButton, 0.7f, 0.02f, 0.2f, 0.06f, displayMetrics);
+        setViewsPosition(mNavigateButton, 0.7f, 0f, 0.2f, 0.06f, displayMetrics);
         return this;
     }
 
@@ -69,13 +84,18 @@ public class ComponentView extends RelativeLayout {
         view.getLayoutParams().height = Math.round(displayResolution.heightPixels * height);
     }
 
-    public ComponentView setContent(GenericObject data) {
-        mHeaderText.setText(data.getName() + ", distance " + ((int) data.getDistance()) + " meters");
+    public ComponentView setContent(GenericMapObject data) {
+        double distance = data.calculateDistance(0, 0, 0);
+        mNameText.setText(data.getName());
+        mDistanceText.setText(distance + " meters");
+        distance = data.calculateDistance(1, 1, 0);
+        mDistanceText.setText(((int) data.getDistance()) + " meters");
         return this;
     }
 
 
     public void setNavigationListener(OnClickListener navigationListener) {
         mNavigateButton.setOnClickListener(navigationListener);
+        this.setOnClickListener(navigationListener);
     }
 }

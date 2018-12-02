@@ -5,5 +5,6 @@ package sk.finishersapps.finisher.lovemydogo.model;
  */
 
 public class Data {
-    public static final String SERVER_URL = "http://192.168.43.91:8080/";
+    public static final String SERVER_URL = "http://192.168.8.105:8080/";
 }
+    

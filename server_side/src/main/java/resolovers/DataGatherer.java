@@ -19,6 +19,9 @@ public class DataGatherer {
 
     }
     private List<GenericPositionAndNameObject> getVetsFromPoints(double x, double y, Integer distance) {
+        if(distance == 10000){
+            distance = 10000000;
+        }
         List<GenericPositionAndNameObject> result = new ArrayList<>();
         try {
             String query = "SELECT name, st_x(way) AS x, st_y(way) AS y, " +

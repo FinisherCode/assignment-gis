@@ -22,7 +22,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 
 import sk.finishersapps.finisher.lovemydogo.R;
-import sk.finishersapps.finisher.lovemydogo.model.data_objects.GenericObject;
+import sk.finishersapps.finisher.lovemydogo.model.data_objects.GenericMapObject;
 
 /**
  * Handles all calls that wants to show something on the map.
@@ -31,7 +31,7 @@ import sk.finishersapps.finisher.lovemydogo.model.data_objects.GenericObject;
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private ArrayList<GenericObject> mPoints = null;
+    private ArrayList<GenericMapObject> mPoints = null;
     private boolean areTwoTypes;
 
     /**
@@ -47,14 +47,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        mPoints = (ArrayList<GenericObject>) getIntent().getSerializableExtra("nodes");
+        mPoints = (ArrayList<GenericMapObject>) getIntent().getSerializableExtra("nodes");
         checkIfAreTwoTypes();
         Log.d("wa", "ha");
     }
 
     private void checkIfAreTwoTypes() {
         areTwoTypes = false;
-        for (GenericObject point: mPoints) {
+        for (GenericMapObject point: mPoints) {
             if(point.isTargetPoint()){
                 areTwoTypes = true;
                 break;
@@ -81,7 +81,7 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             return;
         }
 
-        for (GenericObject node : mPoints) {
+        for (GenericMapObject node : mPoints) {
             LatLng ba = new LatLng(node.getLatitude(), node.getLongitude());
 
             MarkerOptions marker = new MarkerOptions().position(ba).

@@ -69,6 +69,14 @@
         android:background="#fff"
         android:visibility="invisible">
 
+        <TextView
+            android:id="@+id/mmaHeaderText"
+            android:textStyle="bold"
+            android:text="@string/results"
+            android:gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <ProgressBar
             android:id="@+id/mmaResultsProgressBar"
             style="?android:attr/progressBarStyle"
@@ -88,13 +96,16 @@
                 android:id="@+id/mmaResultsListLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:divider="?android:dividerHorizontal"
+                android:orientation="vertical"
+                android:showDividers="middle" />
         </ScrollView>
 
         <Button
             android:id="@+id/mmaCheckResultsOnMapButton"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:onClick="checkResultsOnMapClickced"
             android:text="Check on map" />
     </RelativeLayout>
@@ -129,8 +140,8 @@
             android:id="@+id/mmaBusButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Bus"
             android:onClick="showBusClicked"
+            android:text="Bus"
             android:textColor="#fff"
             android:textStyle="bold" />
 
@@ -154,11 +165,11 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:visibility="invisible"
         android:id="@+id/mmaBusDataOuternLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#fff">
+        android:background="#fff"
+        android:visibility="invisible">
 
         <ProgressBar
             android:id="@+id/mmaBusProgress"
@@ -189,8 +200,8 @@
                 android:id="@+id/mmaBusNavigateButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Navigate"
                 android:onClick="busNavigateClicked"
+                android:text="Navigate"
                 android:textStyle="bold" />
 
             <Button

@@ -31,12 +31,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import sk.finishersapps.finisher.lovemydogo.R;
 import sk.finishersapps.finisher.lovemydogo.model.Data;
 import sk.finishersapps.finisher.lovemydogo.model.communication.AsyncResponse;
 import sk.finishersapps.finisher.lovemydogo.model.communication.ServerAsyncTask;
-import sk.finishersapps.finisher.lovemydogo.model.data_objects.GenericObject;
+import sk.finishersapps.finisher.lovemydogo.model.data_objects.GenericMapObject;
 import sk.finishersapps.finisher.lovemydogo.model.view_objects.ComponentView;
 
 /**
@@ -54,10 +55,10 @@ public class MainMenuActivity extends Activity {
     private RelativeLayout mResultsOuternLayout = null;
     private ProgressBar mResultsProgress = null;
     private Button mCheckResultsOnMapButton = null;
-    private LinearLayout mResultsList = null;
-    private ArrayList<GenericObject> mLastResultsList = null;
+    public LinearLayout mResultsList = null;
+    private List<GenericMapObject> mLastResultsList = null;
     private RelativeLayout mWayOfTransportPickerLayout = null;
-    private GenericObject mLastPickedPoint = null;
+    private GenericMapObject mLastPickedPoint = null;
 
     private RelativeLayout mBusOuternLayout = null;
     private TextView mStartingBusStop = null;
@@ -71,10 +72,11 @@ public class MainMenuActivity extends Activity {
 
     double mMyLatitude;
     double mMyLongitude;
-    private GenericObject mStartBusStop = null;
+    private GenericMapObject mStartBusStop = null;
 
     /**
      * Inits view and inits location.
+     *
      * @param savedInstanceState
      */
     @Override
@@ -187,6 +189,9 @@ public class MainMenuActivity extends Activity {
     }
 
     private void initResultsLayout() {
+        TextView headerText = (TextView) findViewById(R.id.mmaHeaderText);
+        headerText.setTextSize(TypedValue.COMPLEX_UNIT_PX, displayResolution.widthPixels * 0.08f);
+
         mResultsOuternLayout = (RelativeLayout) findViewById(R.id.mmaSearchResultsLayout);
 
         mResultsProgress = (ProgressBar) findViewById(R.id.mmaResultsProgressBar);
@@ -197,7 +202,7 @@ public class MainMenuActivity extends Activity {
         mResultsList = (LinearLayout) findViewById(R.id.mmaResultsListLayout);
 
         mCheckResultsOnMapButton = (Button) findViewById(R.id.mmaCheckResultsOnMapButton);
-        setViewsPosition(mCheckResultsOnMapButton, 0.3f, 0.85f, 0.4f, 0.06f);
+//        setViewsPosition(mCheckResultsOnMapButton, 0.3f, 0.85f, 0.4f, 0.06f);
 
     }
 
@@ -261,7 +266,6 @@ public class MainMenuActivity extends Activity {
     }
 
     public void findParksClicked(View view) {
-//        showDistancePicker(1);
         mLastType = 1;
         searchForResults();
     }
@@ -271,7 +275,6 @@ public class MainMenuActivity extends Activity {
     }
 
     public void emptyClicker(View view) {
-
     }
 
     @Override
@@ -294,26 +297,30 @@ public class MainMenuActivity extends Activity {
     }
 
     private void searchForResults() {
+        search();
+    }
+
+    public ProgressBar getProgress() {
+        return mResultsProgress;
+    }
+
+    public void search() {
         mResultsProgress.setVisibility(View.VISIBLE);
         mCheckResultsOnMapButton.setVisibility(View.INVISIBLE);
         mResultsList.removeAllViews();
         mResultsOuternLayout.setVisibility(View.VISIBLE);
         mDistancePickerView.setVisibility(View.INVISIBLE);
-        search();
-    }
-
-    private void search() {
         ServerAsyncTask at = new ServerAsyncTask(new AsyncResponse() {
             @Override
             public void processFinish(String result) {
                 mResultsProgress.setVisibility(View.INVISIBLE);
                 mCheckResultsOnMapButton.setVisibility(View.VISIBLE);
-                if (result != null) {
-                    processSearchResult(result);
-                } else {
+                if (result == null) {
                     String fakeResults = "[{\"xCoordinate\":17.1046652,\"yCoordinate\":48.146617,\"name\":\"VET Line\",\"distance\":318.03138252},{\"xCoordinate\":17.1200912,\"yCoordinate\":48.1522315,\"name\":\"Bullypet\",\"distance\":1003.37201996},{\"xCoordinate\":17.0948137,\"yCoordinate\":48.1440285,\"name\":\"Veterinárna poliklinika Sibra\",\"distance\":1088.374011},{\"xCoordinate\":17.114711209567968,\"yCoordinate\":48.157711445193506,\"name\":\"VetLINE\",\"distance\":1138.11504816},{\"xCoordinate\":17.1333238,\"yCoordinate\":48.1490953,\"name\":\"Veterinka\",\"distance\":1903.90962079},{\"xCoordinate\":17.1307225,\"yCoordinate\":48.1594336,\"name\":\"Venusta's\",\"distance\":2091.31620454},{\"xCoordinate\":17.0996858,\"yCoordinate\":48.127096,\"name\":\"Vet\",\"distance\":2465.01860401},{\"xCoordinate\":17.1382133,\"yCoordinate\":48.1594174,\"name\":\"Veterinárna poliklinika\",\"distance\":2566.18134932},{\"xCoordinate\":17.1108018,\"yCoordinate\":48.1214658,\"name\":\"VetPoint\",\"distance\":3025.45949012},{\"xCoordinate\":17.137208313871692,\"yCoordinate\":48.168644365300594,\"name\":\"Veterinárna ambulancia MVDr. Ladislav Šranko\",\"distance\":3126.06205531},{\"xCoordinate\":17.1316745,\"yCoordinate\":48.1205144,\"name\":\"Animavet\",\"distance\":3594.82410858},{\"xCoordinate\":17.1337447,\"yCoordinate\":48.1208905,\"name\":\"VetAnet\",\"distance\":3638.11289238},{\"xCoordinate\":17.1556614,\"yCoordinate\":48.1598116,\"name\":\"Veterinárna ambulancia\",\"distance\":3776.65383758},{\"xCoordinate\":17.057207876867835,\"yCoordinate\":48.152070840121034,\"name\":\"Veterinary clinic\",\"distance\":3780.37806604},{\"xCoordinate\":17.1262517,\"yCoordinate\":48.1111545,\"name\":\"Pet Vet\",\"distance\":4385.3705344},{\"xCoordinate\":17.1638427,\"yCoordinate\":48.1635108,\"name\":\"Veterinárna ambulancia\",\"distance\":4490.80138967},{\"xCoordinate\":17.0457581,\"yCoordinate\":48.1826089,\"name\":\"Veterinárna poliklinika EUVET\",\"distance\":5963.64469412},{\"xCoordinate\":17.037255572542836,\"yCoordinate\":48.19209379219258,\"name\":\"W&G veterinárne združenie\",\"distance\":7133.17879078}]";
-                    processSearchResult(fakeResults);
+                    result = fakeResults;
                 }
+                List<GenericMapObject> resultList = processSearchResult(result);
+                drawResultList(resultList);
             }
         });
         String urlDestination = null;
@@ -327,35 +334,53 @@ public class MainMenuActivity extends Activity {
         at.execute(Data.SERVER_URL + urlDestination + "?x=" + mMyLongitude + "&y=" + mMyLatitude + "&distance=" + mDistanceValue);
     }
 
-    private void processSearchResult(String result) {
+    private void drawResultList(List<GenericMapObject> resultList) {
+        if (resultList == null || resultList.size() == 0) {
+            showNoResults();
+        } else {
+            for (GenericMapObject mapObject : resultList) {
+                drawResult(mapObject);
+            }
+        }
+    }
+
+    public List<GenericMapObject> processSearchResult(String result) {
+        List<GenericMapObject> resultList = new ArrayList<>();
+        if (result == null) {
+            return resultList;
+        }
         try {
             JSONArray json = new JSONArray(result);
             if (json.length() > 0) {
-                processSearchResultsArray(json);
+                return processSearchResultsArray(json);
             } else {
                 showNoResults();
+                return null;
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
-    private void showNoResults() {
+    private List<GenericMapObject> processSearchResultsArray(JSONArray results) throws JSONException {
+        List<GenericMapObject> resultsList = new ArrayList<>();
+        for (int i = 0; i < results.length(); i++) {
+            GenericMapObject object = new GenericMapObject(results.getJSONObject(i));
+            resultsList.add(object);
+//            drawResult(object);
+        }
+        mLastResultsList = resultsList;
+        return resultsList;
+    }
+
+    public void showNoResults() {
         Toast.makeText(this, "Sorry no results found, try to change distance", Toast.LENGTH_SHORT).show();
         mDistancePickerView.setVisibility(View.VISIBLE);
         mResultsOuternLayout.setVisibility(View.INVISIBLE);
     }
 
-    private void processSearchResultsArray(JSONArray results) throws JSONException {
-        mLastResultsList = new ArrayList<>();
-        for (int i = 0; i < results.length(); i++) {
-            GenericObject object = new GenericObject(results.getJSONObject(i));
-            mLastResultsList.add(object);
-            drawResult(object);
-        }
-    }
-
-    private void drawResult(final GenericObject object) {
+    private void drawResult(final GenericMapObject object) {
         View.OnClickListener navigationListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -367,7 +392,7 @@ public class MainMenuActivity extends Activity {
         mResultsList.addView(cv);
     }
 
-    private void showWayOfTransportPicker(GenericObject object) {
+    private void showWayOfTransportPicker(GenericMapObject object) {
         mLastPickedPoint = object;
         mWayOfTransportPickerLayout.setVisibility(View.VISIBLE);
     }
@@ -376,9 +401,10 @@ public class MainMenuActivity extends Activity {
         openMapWithInputNodes(mLastResultsList);
     }
 
-    private void openMapWithInputNodes(ArrayList<GenericObject> inputPoints) {
+    private void openMapWithInputNodes(List<GenericMapObject> inputPoints) {
+
         Intent i = new Intent(this, MapActivity.class);
-        i.putExtra("nodes", inputPoints);
+        i.putExtra("nodes", (ArrayList) inputPoints);
         startActivity(i);
     }
 
@@ -412,9 +438,9 @@ public class MainMenuActivity extends Activity {
     private void parseParkLots(String result) {
         try {
             JSONArray json = new JSONArray(result);
-            ArrayList<GenericObject> inputIntoMap = new ArrayList<>();
+            ArrayList<GenericMapObject> inputIntoMap = new ArrayList<>();
             for (int i = 0; i < json.length(); i++) {
-                inputIntoMap.add(new GenericObject(json.getJSONObject(i)));
+                inputIntoMap.add(new GenericMapObject(json.getJSONObject(i)));
             }
             mLastPickedPoint.setTargetPoint(true);
             inputIntoMap.add(mLastPickedPoint);
@@ -433,7 +459,7 @@ public class MainMenuActivity extends Activity {
         startNavigation(mStartBusStop);
     }
 
-    private void startNavigation(GenericObject lastPicked) {
+    private void startNavigation(GenericMapObject lastPicked) {
         Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?daddr=" +
                 lastPicked.getLatitude() + "," + lastPicked.getLongitude()));
         i.setPackage("com.google.android.apps.maps");
@@ -451,7 +477,7 @@ public class MainMenuActivity extends Activity {
         downloadBusInfo();
     }
 
-    private void downloadBusInfo() {
+    public void downloadBusInfo() {
         ServerAsyncTask at = new ServerAsyncTask(new AsyncResponse() {
             @Override
             public void processFinish(String result) {
@@ -472,9 +498,9 @@ public class MainMenuActivity extends Activity {
     private void processBusesResult(String result) {
         try {
             JSONObject resultJson = new JSONObject(result);
-            GenericObject startBusStop = new GenericObject(resultJson.getJSONObject("starBusStop"));
+            GenericMapObject startBusStop = new GenericMapObject(resultJson.getJSONObject("starBusStop"));
             mStartBusStop = startBusStop;
-            GenericObject endBusStop = new GenericObject(resultJson.getJSONObject("endBusStop"));
+            GenericMapObject endBusStop = new GenericMapObject(resultJson.getJSONObject("endBusStop"));
             mStartingBusStop.setText(Html.fromHtml("Closest bus stop to your position is: <b>" + startBusStop.getName() + "</b>"));
             mEndingBusStop.setText(Html.fromHtml("Closest bus stop to " + mLastPickedPoint.getName() + " is: <b>" +
                     endBusStop.getName() + "</b>"));
@@ -483,5 +509,17 @@ public class MainMenuActivity extends Activity {
             Log.e(TAG, "parsing json error " + e.getMessage());
         }
 
+    }
+
+    public void setLatType(int i) {
+        mLastType = i;
+    }
+
+    public void setDistance(int distance) {
+        mDistanceValue = distance;
+    }
+
+    public LinearLayout getResultLayout() {
+        return mResultsList;
     }
 }
